@@ -13,7 +13,7 @@ import com.imooc.o2o.entity.Area;
 public class AreaDaoTest extends BaseTest {
 	@Autowired
 	private AreaDao areaDao;
-	
+
 	@Test
 	public void testQueryArea() {
 		List<Area> areaList = areaDao.queryArea();

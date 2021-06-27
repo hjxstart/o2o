@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true" scanPeriod="60 seconds"
+	debug="false">
+	<!-- 定义参数常liang -->
+	<!-- TRACE < DEBUG < INFO < WARN < ERROR -->
+	<!-- 常用 DEBUG、INFO 和 ERROR 就可以了 -->
+	<property name="log.level" value="debug"/>
+	<!-- 文件保留时间 -->
+	<property name="log.maxHistory" value="30" />
+	<!-- 日志存储的位置 -->
+	<property name="log.filePath"
+		value="${catalina.base}/logs/webapps" />
+	<!-- 日志格式：时间 线程 级别 那个类输出的日志信息 换行 -->
+	<property name="log.pattern"
+		value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{55} - %msg%n"/>
+		
+	<!-- 输出到控制台的。日志输出媒介，控制台输出 -->
+	<appender name="consoleAppender" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>${log.pattern}</pattern>
+		</encoder>
+	</appender>
+	
+	<!-- 以下是输出日志文件的 -->
+	<!-- DEBUG -->
+	<!-- 滚动日志 -->
+	<appender name="debugAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<!-- 文件路径 -->
+		<file>${log.filePath}/debug.log</file>
+		<!-- 基于时间滚动，按天 -->
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<!-- 文件名称,在log.filePath路径下生产以 debug.日期.log.gz结尾的文件 -->
+			<fileNamePattern>${log.filePath}/debug/debug.%d{yyyy-MM-dd}.log.gz</fileNamePattern>
+			<!-- 文件最大保存数量，轮询 -->
+			<maxHistory>${log.maxHistory}</maxHistory>
+		</rollingPolicy>
+		<!-- 将日志信息转化为字符串，将字符串输出到文件里 -->
+		<encoder>
+			<pattern>${log.pattern}</pattern>
+		</encoder>
+		<!-- 过滤器：过滤不是 debug.level的日志 -->
+		<filter class="ch.qos.logback.classic.filter.LevelFilter">
+			<level>DEBUG</level>
+			<!-- 如何时debug日志就记录下来 -->
+			<onMatch>ACCEPT</onMatch>
+			<!-- 如果不是debug日志就否定掉 -->
+			<onMismatch>DENY</onMismatch>
+		</filter>
+	</appender>
+	
+	<!-- INFO -->
+	<!-- 文件滚动日志 -->
+	<appender name="infoAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<!-- 文件路径 -->
+		<file>${log.filePath}/info.log</file>
+		<!-- 上面写满了，就使用下面的滚动文件 -->
+		<!-- 基于时间滚动，按天 -->
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<!-- 文件名称,在log.filePath路径下生产以 debug.日期.log.gz结尾的文件 -->
+			<fileNamePattern>${log.filePath}/info/info.%d{yyyy-MM-dd}.log.gz</fileNamePattern>
+			<!-- 文件最大保存数量，轮询 -->
+			<maxHistory>${log.maxHistory}</maxHistory>
+		</rollingPolicy>
+		<!-- 将日志信息转化为字符串，将字符串输出到文件里 -->
+		<encoder>
+			<pattern>${log.pattern}</pattern>
+		</encoder>
+		<!-- 过滤器：过滤不是 debug.level的日志 -->
+		<filter class="ch.qos.logback.classic.filter.LevelFilter">
+			<level>INFO</level>
+			<!-- 如何时debug日志就记录下来 -->
+			<onMatch>ACCEPT</onMatch>
+			<!-- 如果不是debug日志就否定掉 -->
+			<onMismatch>DENY</onMismatch>
+		</filter>
+	</appender>
+	
+	<!-- ERROR -->
+	<!-- 文件滚动日志 -->
+	<appender name="errorAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<!-- 文件路径 -->
+		<file>${log.filePath}/error.log</file>
+		<!-- 上面写满了，就使用下面的滚动文件 -->
+		<!-- 基于时间滚动，按天 -->
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<!-- 文件名称,在log.filePath路径下生产以 debug.日期.log.gz结尾的文件 -->
+			<fileNamePattern>${log.filePath}/error/error.%d{yyyy-MM-dd}.log.gz</fileNamePattern>
+			<!-- 文件最大保存数量，轮询 -->
+			<maxHistory>${log.maxHistory}</maxHistory>
+		</rollingPolicy>
+		<!-- 将日志信息转化为字符串，将字符串输出到文件里 -->
+		<encoder>
+			<pattern>${log.pattern}</pattern>
+		</encoder>
+		<!-- 过滤器：过滤不是 debug.level的日志 -->
+		<filter class="ch.qos.logback.classic.filter.LevelFilter">
+			<level>ERROR</level>
+			<!-- 如何时debug日志就记录下来 -->
+			<onMatch>ACCEPT</onMatch>
+			<!-- 如果不是debug日志就否定掉 -->
+			<onMismatch>DENY</onMismatch>
+		</filter>
+	</appender>
+	
+	
+	<!-- 告诉logback 需要关注那个包下面的信息 只记录那个日记级别的信息 additivity(将root日志的信息也放在这个 logger 里面来)  -->
+	<logger name="com.imooc.o2o" level="${log.level}" additivity="true">
+		<!-- 绑定 appender, 往这个鞋appender输出信息 -->
+		<appender-ref ref="debugAppender"/>
+		<appender-ref ref="infoAppender"/>
+		<appender-ref ref="errorAppender"/>
+	</logger>
+	
+	<!-- 根 root, 如果没有指定 level 会继承 root 的level -->
+	<root level="info">
+		<!-- 往下面的 consoleAppender 输出信息 -->
+		<appender-ref ref="consoleAppender"/>
+	</root>
+</configuration>
