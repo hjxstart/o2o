@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+    <title>Insert title here</title>
+</head>
+
+<body>
+    <div id="app">
+        {{ message }}
+    </div>
+
+</body>
+<script>
+    var app = new Vue({
+        el: '#app', // 将 Vue 应用会将其挂载到一个 DOM 元素上（#app）
+        data: {
+            message: 'Hello Vue!'
+        }
+    })
+</script>
+
+</html>

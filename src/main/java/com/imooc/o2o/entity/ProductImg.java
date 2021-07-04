@@ -15,6 +15,7 @@ public class ProductImg {
 	private Integer priority;
 	private Date createTime;
 	private Long productId;
+	
 	public Long getProductImgId() {
 		return productImgId;
 	}

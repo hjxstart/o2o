@@ -3,13 +3,18 @@ package com.imooc.o2o.service;
 import static org.junit.Assert.assertEquals;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.Date;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.imooc.o2o.BaseTest;
+import com.imooc.o2o.dto.ImageHolder;
 import com.imooc.o2o.dto.ShopExecution;
 import com.imooc.o2o.entity.Area;
 import com.imooc.o2o.entity.PersonInfo;
@@ -23,7 +28,34 @@ public class ShopServiceTest extends BaseTest {
 	private ShopService shopService;
 	
 	@Test
-	public void testAddShop() {
+	@Ignore
+	public void testGetShopList() {
+		Shop shopCondition = new Shop();
+		ShopCategory sc = new ShopCategory();
+		sc.setShopCategoryId(1L);
+		shopCondition.setShopCategory(sc);
+		ShopExecution se = shopService.getShopList(shopCondition, 1, 2);
+		System.out.println("店铺列表数为：" + se.getShopList().size());
+		System.out.println("店铺总数为：" + se.getCount());
+	}
+	
+	@Test
+	@Ignore
+	public void testModifyShop() throws FileNotFoundException {
+		Shop shop = new Shop();
+		shop.setShopId(1L);
+		shop.setShopName("修改后的店铺名称");
+		File shopImg = new File("/Users/jxh/Downloads/src.jpeg");
+		InputStream is = new FileInputStream(shopImg);
+		ImageHolder imageHolder =  new ImageHolder("src.jpeg", is);
+		ShopExecution shopExecution =  shopService.modifyShop(shop, imageHolder);
+		System.out.println("新的图片地址为：" + shopExecution.getShop().getShopImg());
+	}
+	
+	
+	@Test
+	@Ignore
+	public void testAddShop() throws FileNotFoundException {
 		Shop shop = new Shop();
 		PersonInfo  owner = new PersonInfo();
 		Area area = new Area();
@@ -35,16 +67,18 @@ public class ShopServiceTest extends BaseTest {
 		shop.setOwner(owner);
 		shop.setArea(area);
 		shop.setShopCategory(shopCategory);
-		shop.setShopName("测试的店铺1");
-		shop.setShopDesc("test1");
-		shop.setShopAddr("test1");
-		shop.setPhone("test1");
+		shop.setShopName("测试的店铺2");
+		shop.setShopDesc("test2");
+		shop.setShopAddr("test2");
+		shop.setPhone("test2");
 		// shop.setShopImg("test1");
 		shop.setCreateTime(new Date());
 		shop.setEnableStatus(ShopStateEnum.CHECK.getState()); // 0
 		shop.setAdvice("审核中");
 		File shopImg = new File("/Users/jxh/Downloads/xiaohuangren.jpeg");
-		ShopExecution se = shopService.addShop(shop,shopImg);
+		InputStream is = new FileInputStream(shopImg);
+		ImageHolder imageHolder =  new ImageHolder(shopImg.getName(), is);
+		ShopExecution se = shopService.addShop(shop,imageHolder);
 		assertEquals(ShopStateEnum.CHECK.getState(), se.getState());
 	}
 }

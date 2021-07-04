@@ -7,7 +7,7 @@ public class ProductCategory {
 	private Long productCategoryId;
 	private Long shopId;
 	private String productCategoryName;
-	private Integer priority;
+	private Integer priority; // 越大越往前显示
 	private Date createTime;
 	public Long getProductCategoryId() {
 		return productCategoryId;

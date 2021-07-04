@@ -17,9 +17,10 @@ public class Product {
 	// 0:下架，1:在前端展示系统展示
 	private Integer enableStatus;
 	
-	private List<ProductImg> productImgList;
+	private List<ProductImg> productImgList; // 商品详情图
 	private ProductCategory productCategory;
-	private Shop hsop;
+	private Shop shop;
+	
 	public Long getProductId() {
 		return productId;
 	}
@@ -92,12 +93,10 @@ public class Product {
 	public void setProductCategory(ProductCategory productCategory) {
 		this.productCategory = productCategory;
 	}
-	public Shop getHsop() {
-		return hsop;
+	public Shop getShop() {
+		return shop;
 	}
-	public void setHsop(Shop hsop) {
-		this.hsop = hsop;
+	public void setShop(Shop shop) {
+		this.shop = shop;
 	}
-	
-	
 }

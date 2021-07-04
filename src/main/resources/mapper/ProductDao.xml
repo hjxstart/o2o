@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.imooc.o2o.dao.ProductDao">
+	<!-- 复合数据类型(返回商品的信息和商品详情图的信息) 接口:Product queryProductById(long productId) -->
+	<resultMap type="com.imooc.o2o.entity.Product"
+		id="productMap">
+		<id column="product_id" property="productId" />
+		<result column="product_name" property="productName" />
+		<result column="product_desc" property="productDesc" />
+		<result column="img_addr" property="imgAddr" />
+		<result column="normal_price" property="normalPrice" />
+		<result column="promotion_price" property="promotionPrice" />
+		<result column="priority" property="priority" />
+		<result column="create_time" property="createTime" />
+		<result column="last_edit_time" property="lastEditTime" />
+		<result column="enable_status" property="enableStatus" />
+		<!--assocication可以指定联合的JavaBean对象; property="role"指定哪个属性是联合的对象; javaType:指定这个属性对象的类型 -->
+		<association column="product_category_id"
+			property="productCategory"
+			javaType="com.imooc.o2o.entity.ProductCategory">
+			<id column="product_category_id" property="productCategoryId" />
+			<result column="product_category_name"
+				property="productCategoryName" />
+		</association>
+		<association property="shop" column="shpo_id"
+			javaType="com.imooc.o2o.entity.Shop">
+			<id column="shop_id" property="shopId" />
+			<result column="owner_id" property="ownerId" />
+			<result column="shop_name" property="shopName" />
+		</association>
+		<!-- 一对多的关系 List<ProductImgList> -->
+		<collection property="productImgList" column="product_id"
+			ofType="com.imooc.o2o.entity.ProductImg">
+			<id column="product_img_id" property="productImgId" />
+			<result column="detail_img" property="imgAddr" />
+			<result column="img_desc" property="imgDesc" />
+			<result column="priority" property="priority" />
+			<result column="create_time" property="createTime" />
+			<result column="product_id" property="productId" />
+		</collection>
+	</resultMap>
+	
+	<!-- 根据 product id 查询商品信息 -->
+	<select id="queryProductById" resultMap="productMap"
+		parameterType="Long">
+		SELECT
+		p.product_id,
+		p.product_name,
+		p.product_desc,
+		p.img_addr,
+		p.normal_price,
+		p.promotion_price,
+		p.priority,
+		p.create_time,
+		p.last_edit_time,
+		p.enable_status,
+		p.product_category_id,
+		p.shop_id,
+		pm.product_img_id,
+		pm.img_addr AS detail_img,
+		pm.img_desc,
+		pm.priority,
+		pm.create_time
+		FROM
+		tb_product p
+		LEFT JOIN
+		tb_product_img pm
+		ON
+		p.product_id=pm.product_id
+		WHERE
+		p.product_id=#{productId}
+		ORDER BY
+		pm.priority DESC
+	</select>
+
+	<insert id="insertProduct"
+		parameterType="com.imooc.o2o.entity.Product" useGeneratedKeys="true"
+		keyProperty="productId" keyColumn="product_id">
+		INSERT INTO
+		tb_product(product_name,
+		product_desc, img_addr, normal_price, promotion_price, priority,
+		create_time, last_edit_time,
+		enable_status, product_category_id,
+		shop_id)
+		VALUES
+		(#{productName}, #{productDesc}, #{imgAddr},
+		#{normalPrice}, #{promotionPrice}, #{priority}, #{createTime},
+		#{lastEditTime},
+		#{enableStatus}, #{productCategory.productCategoryId},
+		#{shop.shopId})
+	</insert>
+	
+	<!-- 更新店铺的信息 -->
+	<update id="updateProduct" parameterType="com.imooc.o2o.entity.Product" keyProperty="product_id" useGeneratedKeys="true">
+		UPDATE tb_product
+		<set>
+			<if test="productName != null">product_name=#{productName},</if>
+			<if test="productDesc != null">product_desc=#{productDesc},</if>
+			<if test="imgAddr != null">img_addr=#{imgAddr},</if>
+			<if test="normalPrice != null">normal_price=#{normalPrice},</if>
+			<if test="promotionPrice != null">promotion_price=#{promotionPrice},</if>
+			<if test="priority != null">priority=#{priority},</if>
+			<if test="lastEditTime != null">last_edit_time=#{lastEditTime},</if>
+			<if test="enableStatus != null">enable_status=#{enableStatus},</if>
+			<if test="productCategory != null and productCategory.productCategoryId != null">
+				product_category_id=#{productCategory.productCategoryId}
+			</if>
+		</set>
+		WHERE product_id=#{productId} AND shop_id=#{shop.shopId}
+	</update>
+</mapper>
